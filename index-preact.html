@@ -352,9 +352,9 @@
       // Calculate subtotal (tax-excluded)
       const subtotal = hostCharge + metricCharge + externalCharge + traceCharge;
 
-      // Apply minimum charge
-      const minimumApplied = subtotal < PRICES.MINIMUM_CHARGE;
-      const totalExcludingTax = Math.max(subtotal, PRICES.MINIMUM_CHARGE);
+      // Apply minimum charge (only if there is any usage)
+      const minimumApplied = subtotal > 0 && subtotal < PRICES.MINIMUM_CHARGE;
+      const totalExcludingTax = subtotal > 0 ? Math.max(subtotal, PRICES.MINIMUM_CHARGE) : 0;
 
       // Calculate tax and total (tax-included)
       const tax = Math.round(totalExcludingTax * PRICES.TAX_RATE);
