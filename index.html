@@ -441,7 +441,7 @@
 
       // Calculate trace span charges
       const billableTraceSpans = Math.max(0, traceSpans - INCLUDED.FREE_TRACE);
-      const traceCharge = billableTraceSpans * PRICES.TRACE_1M;
+      const traceCharge = Math.ceil(billableTraceSpans) * PRICES.TRACE_1M;
 
       // Calculate subtotal (tax-excluded)
       const subtotal = hostCharge + metricCharge + externalCharge + traceCharge;
