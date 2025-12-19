@@ -6,16 +6,20 @@
   <title>Mackerel料金シミュレーター</title>
   <style>
     /* CSS Variables - Mackerel Official Brand Colors */
+
     :root {
       --accent-color: #1dc7fa;
-      --accent-color-dark: #0cb3e6;
-      --accent-color-light: #64d7fa;
-      --mackerel-bg: #F5F7FA;
-      --text-primary: #333333;
-      --text-secondary: #666666;
-      --border-color: #E0E0E0;
-      --white: #FFFFFF;
-      --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      --accent-color-hover: #19C6fa;
+      --accent-color-light: #0cb3e6;
+      --mackerel-bg: #f8f9fa;
+      --mackerel-bg-alt: #f3f4f5;
+      --text-primary: #111;
+      --text-secondary: #444;
+      --text-tertiary: #777;
+      --border-color: #b1b3b6;
+      --border-color-light: #d1d3d6;
+      --white: #fff;
+      --error-color: #ff2635;
     }
 
     /* Reset & Base Styles */
@@ -26,31 +30,35 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino weightFixed', 'Segoe UI', 'Meiryo', sans-serif;
       background-color: var(--mackerel-bg);
       color: var(--text-primary);
-      line-height: 1.6;
+      line-height: 1.8;
       padding: 1rem;
+      font-size: 16px;
     }
 
     /* Container & Layout */
     .container {
-      max-width: 1000px;
+      max-width: 1140px;
       margin: 0 auto;
+      padding: 0 1rem;
     }
 
     header {
       text-align: center;
-      margin-bottom: 2rem;
-      padding: 2rem 1rem;
+      margin-bottom: 3rem;
+      padding: 3rem 1rem;
       background: var(--accent-color);
       color: var(--white);
-      box-shadow: var(--shadow);
+      border-radius: 8px;
     }
 
     header h1 {
       font-size: 2rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
     }
 
     .subtitle {
@@ -66,16 +74,18 @@
     /* Form Section */
     .calculator-form {
       background: var(--white);
-      padding: 2rem;
-      box-shadow: var(--shadow);
+      padding: 2.5rem;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     .calculator-form h2 {
-      font-size: 1.3rem;
-      color: var(--accent-color-dark);
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--accent-color-light);
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--mackerel-bg-alt);
+      font-weight: 700;
     }
 
     .form-grid {
@@ -89,42 +99,53 @@
     }
 
     .form-group label {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text-primary);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
     }
 
     .form-group input {
-      padding: 0.75rem;
+      padding: 0.75rem 0.875rem;
       border: 2px solid var(--border-color);
-      font-size: 1rem;
-      transition: border-color 0.2s;
+      font-size: 1.125rem;
+      transition: all 0.2s ease;
+      border-radius: 4px;
+      background-color: var(--white);
+    }
+
+    .form-group input:hover {
+      border-color: var(--accent-color-hover);
     }
 
     .form-group input:focus {
       outline: none;
-      border-color: var(--accent-color);
+      border-color: var(--accent-color-hover);
+      box-shadow: 0 0 0 3px rgba(4, 155, 240, 0.1);
     }
 
     .form-hint {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      margin-top: 0.25rem;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 0.5rem;
+      line-height: 1.6;
     }
 
     /* Price Breakdown Section */
     .price-breakdown {
       background: var(--white);
-      padding: 2rem;
-      box-shadow: var(--shadow);
+      padding: 2.5rem;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     .price-breakdown h2 {
-      font-size: 1.3rem;
-      color: var(--accent-color-dark);
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--accent-color-light);
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--mackerel-bg-alt);
+      font-weight: 700;
     }
 
     .breakdown-table {
@@ -133,94 +154,114 @@
     }
 
     .breakdown-table td {
-      padding: 0.75rem 0;
-      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--mackerel-bg-alt);
+      font-size: 1rem;
     }
 
     .breakdown-table td:first-child {
-      color: var(--text-primary);
+      color: var(--text-secondary);
     }
 
     .breakdown-table td:last-child {
       text-align: right;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-primary);
+      font-size: 1.125rem;
     }
 
     .breakdown-note {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      padding-left: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      padding-left: 0;
+      margin-top: 0.25rem;
     }
 
     .breakdown-divider {
-      border-bottom: 2px solid var(--text-primary) !important;
+      border-bottom: 2px solid var(--border-color-light) !important;
     }
 
     .breakdown-subtotal {
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 1.125rem;
+      color: var(--text-primary) !important;
     }
 
     .breakdown-minimum {
-      color: var(--accent-color-dull);
+      color: var(--accent-color);
       font-style: italic;
     }
 
     .breakdown-tax {
-      color: var(--text-secondary);
+      color: var(--text-tertiary);
     }
 
     .breakdown-total {
-      font-size: 1.3rem;
+      font-size: 1.5rem;
       font-weight: 700;
-      color: var(--accent-color-dark);
+      color: var(--accent-color);
     }
 
     .breakdown-total td {
-      padding: 1rem 0 0.5rem 0;
+      padding: 1.5rem 0 0.5rem 0;
+      border-bottom: none !important;
     }
 
     /* Footer */
     footer {
       text-align: center;
-      margin-top: 2rem;
-      padding: 1.5rem;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
+      margin-top: 3rem;
+      padding: 2rem 1rem;
+      font-size: 0.875rem;
+      color: var(--text-tertiary);
+      line-height: 1.8;
     }
 
     footer a {
-      color: var(--accent-color-dark);
+      color: var(--accent-color);
       text-decoration: none;
+      transition: opacity 0.2s ease;
     }
 
     footer a:hover {
-      text-decoration: underline;
+      opacity: 0.7;
     }
 
     /* Responsive Design */
     @media (min-width: 768px) {
+      body {
+        font-size: 16px;
+      }
+
       header h1 {
         font-size: 2.5rem;
       }
 
       .form-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
       }
 
       main {
         grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+      }
+
+      .container {
+        padding: 0 2rem;
       }
     }
 
     @media (max-width: 767px) {
       body {
         padding: 0.5rem;
+        font-size: 14px;
       }
 
       header {
-        padding: 1.5rem 1rem;
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+        border-radius: 4px;
       }
 
       header h1 {
@@ -230,6 +271,20 @@
       .calculator-form,
       .price-breakdown {
         padding: 1.5rem;
+      }
+
+      .calculator-form h2,
+      .price-breakdown h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .breakdown-table td {
+        padding: 0.75rem 0;
+      }
+
+      .breakdown-total {
+        font-size: 1.25rem;
       }
     }
   </style>
@@ -246,7 +301,7 @@
         <h2>利用状況を入力</h2>
         <div class="form-grid">
           <div class="form-group">
-            <label for="standard-hosts">標準ホスト数</label>
+            <label for="standard-hosts">スタンダードホスト数</label>
             <input
               type="number"
               id="standard-hosts"
@@ -270,7 +325,7 @@
           </div>
 
           <div class="form-group">
-            <label for="custom-metrics">カスタムメトリクス数</label>
+            <label for="custom-metrics">メトリック数</label>
             <input
               type="number"
               id="custom-metrics"
@@ -322,8 +377,8 @@
             </tr>
             <tr id="row-metrics">
               <td>
-                カスタムメトリクス <span id="metrics-count">(0個)</span>
-                <div class="breakdown-note" id="metrics-note">※含まれるメトリクス: 0個</div>
+                カスタムメトリック <span id="metrics-count">(0個)</span>
+                <div class="breakdown-note" id="metrics-note">※含まれるメトリック: 0個</div>
               </td>
               <td id="metrics-price">¥0</td>
             </tr>
@@ -491,7 +546,7 @@
       document.getElementById('metrics-count').textContent = `(${result.customMetrics}個)`;
       document.getElementById('metrics-price').textContent = formatPrice(result.metricCharge);
       document.getElementById('metrics-note').textContent =
-        `※含まれるメトリクス: ${result.includedMetrics}個`;
+        `※含まれるメトリック: ${result.includedMetrics}個`;
 
       // Update external monitoring
       document.getElementById('external-count').textContent = `(${result.externalChecks}チェック)`;
