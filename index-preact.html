@@ -31,50 +31,56 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Hiragino weightFixed', 'Segoe UI', 'Meiryo', sans-serif;
-      background-color: var(--mackerel-bg);
+      background-color: var(--white);
       color: var(--text-primary);
       line-height: 1.8;
-      padding: 1rem;
+      margin: 0;
+      padding: 0;
       font-size: 16px;
     }
 
     /* Container & Layout */
     .container {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 1rem;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
     }
 
     header {
-      text-align: center;
-      margin-bottom: 3rem;
-      padding: 3rem 1rem;
+      margin: 0;
+      padding: 1rem 1rem;
       background: var(--accent-color);
       color: var(--white);
+      text-shadow: 0 1px 0 #0b8cb3;
     }
 
     header h1 {
-      font-size: 2rem;
-      margin-bottom: 0.75rem;
+      font-size: 1.25rem;
+      margin: 0;
       font-weight: 700;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
     }
 
     .subtitle {
-      font-size: 0.95rem;
+      font-size: 0.75rem;
       opacity: 0.9;
+      margin-top: 0.25rem;
     }
 
     main {
       display: grid;
       gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
     }
 
     /* Form Section */
     .calculator-form {
       background: var(--white);
       padding: 2.5rem;
-      border: 1px solid rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color-light);
+      border-radius: 8px;
     }
 
     .calculator-form h2 {
@@ -104,21 +110,24 @@
     }
 
     .form-group input {
-      padding: 0.75rem 0.875rem;
-      border: 2px solid var(--border-color);
-      font-size: 1.125rem;
-      transition: all 0.2s ease;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-color-light);
+      border-radius: 4px;
+      font-size: 0.875rem;
+      transition: all 0.15s ease;
       background-color: var(--white);
+      color: var(--text-primary);
+      font-family: inherit;
     }
 
     .form-group input:hover {
-      border-color: var(--accent-color-hover);
+      border-color: var(--border-color);
     }
 
     .form-group input:focus {
       outline: none;
-      border-color: var(--accent-color-hover);
-      box-shadow: 0 0 0 3px rgba(4, 155, 240, 0.1);
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(29, 199, 250, 0.08);
     }
 
     .form-hint {
@@ -132,7 +141,8 @@
     .price-breakdown {
       background: var(--white);
       padding: 2.5rem;
-      border: 1px solid rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color-light);
+      border-radius: 8px;
     }
 
     .price-breakdown h2 {
@@ -206,8 +216,8 @@
     /* Footer */
     footer {
       text-align: center;
-      margin-top: 3rem;
-      padding: 2rem 1rem;
+      margin: 0;
+      padding: 3rem 1rem;
       font-size: 0.875rem;
       color: var(--text-tertiary);
       line-height: 1.8;
@@ -229,8 +239,16 @@
         font-size: 16px;
       }
 
+      header {
+        padding: 1rem 2rem;
+      }
+
       header h1 {
-        font-size: 2.5rem;
+        font-size: 1.5rem;
+      }
+
+      .subtitle {
+        font-size: 0.8rem;
       }
 
       .form-grid {
@@ -241,26 +259,29 @@
       main {
         grid-template-columns: 1fr 1fr;
         gap: 2.5rem;
-      }
-
-      .container {
-        padding: 0 2rem;
+        padding: 2.5rem 2rem;
       }
     }
 
     @media (max-width: 767px) {
       body {
-        padding: 0.5rem;
         font-size: 14px;
       }
 
       header {
-        padding: 2rem 1rem;
-        margin-bottom: 2rem;
+        padding: 1rem;
       }
 
       header h1 {
-        font-size: 1.5rem;
+        font-size: 1.125rem;
+      }
+
+      .subtitle {
+        font-size: 0.7rem;
+      }
+
+      main {
+        padding: 1.5rem 1rem;
       }
 
       .calculator-form,
