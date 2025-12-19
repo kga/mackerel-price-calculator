@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mackerel料金シミュレーター (Alpine.js版)</title>
+  <style>
+    /* CSS Variables - Mackerel Official Brand Colors */
+
+    :root {
+      --accent-color: #1dc7fa;
+      --accent-color-hover: #19C6fa;
+      --accent-color-light: #0cb3e6;
+      --mackerel-bg: #f8f9fa;
+      --mackerel-bg-alt: #f3f4f5;
+      --text-primary: #111;
+      --text-secondary: #444;
+      --text-tertiary: #777;
+      --border-color: #b1b3b6;
+      --border-color-light: #d1d3d6;
+      --white: #fff;
+      --error-color: #ff2635;
+    }
+
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino weightFixed', 'Segoe UI', 'Meiryo', sans-serif;
+      background-color: var(--mackerel-bg);
+      color: var(--text-primary);
+      line-height: 1.8;
+      padding: 1rem;
+      font-size: 16px;
+    }
+
+    /* Container & Layout */
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 3rem 1rem;
+      background: var(--accent-color);
+      color: var(--white);
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    main {
+      display: grid;
+      gap: 2rem;
+    }
+
+    /* Form Section */
+    .calculator-form {
+      background: var(--white);
+      padding: 2.5rem;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .calculator-form h2 {
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--mackerel-bg-alt);
+      font-weight: 700;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .form-group input {
+      padding: 0.75rem 0.875rem;
+      border: 2px solid var(--border-color);
+      font-size: 1.125rem;
+      transition: all 0.2s ease;
+      background-color: var(--white);
+    }
+
+    .form-group input:hover {
+      border-color: var(--accent-color-hover);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent-color-hover);
+      box-shadow: 0 0 0 3px rgba(4, 155, 240, 0.1);
+    }
+
+    .form-hint {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 0.5rem;
+      line-height: 1.6;
+    }
+
+    /* Price Breakdown Section */
+    .price-breakdown {
+      background: var(--white);
+      padding: 2.5rem;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .price-breakdown h2 {
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--mackerel-bg-alt);
+      font-weight: 700;
+    }
+
+    .breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .breakdown-table td {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--mackerel-bg-alt);
+      font-size: 1rem;
+    }
+
+    .breakdown-table td:first-child {
+      color: var(--text-secondary);
+    }
+
+    .breakdown-table td:last-child {
+      text-align: right;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-size: 1.125rem;
+    }
+
+    .breakdown-note {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      padding-left: 0;
+      margin-top: 0.25rem;
+    }
+
+    .breakdown-divider {
+      border-bottom: 2px solid var(--border-color-light) !important;
+    }
+
+    .breakdown-subtotal {
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--text-primary) !important;
+    }
+
+    .breakdown-minimum {
+      color: var(--accent-color);
+      font-style: italic;
+    }
+
+    .breakdown-tax {
+      color: var(--text-tertiary);
+    }
+
+    .breakdown-total {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-color);
+    }
+
+    .breakdown-total td {
+      padding: 1.5rem 0 0.5rem 0;
+      border-bottom: none !important;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 2rem 1rem;
+      font-size: 0.875rem;
+      color: var(--text-tertiary);
+      line-height: 1.8;
+    }
+
+    footer a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    footer a:hover {
+      opacity: 0.7;
+    }
+
+    /* Responsive Design */
+    @media (min-width: 768px) {
+      body {
+        font-size: 16px;
+      }
+
+      header h1 {
+        font-size: 2.5rem;
+      }
+
+      .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+      }
+
+      main {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+      }
+
+      .container {
+        padding: 0 2rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      body {
+        padding: 0.5rem;
+        font-size: 14px;
+      }
+
+      header {
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      .calculator-form,
+      .price-breakdown {
+        padding: 1.5rem;
+      }
+
+      .calculator-form h2,
+      .price-breakdown h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .breakdown-table td {
+        padding: 0.75rem 0;
+      }
+
+      .breakdown-total {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body x-data="calculator()">
+  <div class="container">
+    <header>
+      <h1>Mackerel料金シミュレーター (Alpine.js版)</h1>
+      <p class="subtitle">料金は税抜き表示です（最終的に税込み金額も表示されます）</p>
+    </header>
+
+    <main>
+      <section class="calculator-form">
+        <h2>利用状況を入力</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>スタンダードホスト数</label>
+            <input
+              type="number"
+              x-model.number="standardHosts"
+              min="0"
+              aria-describedby="standard-hint"
+            >
+            <small id="standard-hint" class="form-hint">1台あたり¥1,982/月（税抜）<br>200メトリック含む</small>
+          </div>
+
+          <div class="form-group">
+            <label>マイクロホスト数</label>
+            <input
+              type="number"
+              x-model.number="microHosts"
+              min="0"
+              aria-describedby="micro-hint"
+            >
+            <small id="micro-hint" class="form-hint">1台あたり¥600/月（税抜）<br>30メトリック含む</small>
+          </div>
+
+          <div class="form-group">
+            <label>メトリック数</label>
+            <input
+              type="number"
+              x-model.number="customMetrics"
+              min="0"
+              aria-describedby="metrics-hint"
+            >
+            <small id="metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>ホストに含まれる分を超えた場合のみ課金</small>
+          </div>
+
+          <div class="form-group">
+            <label>外形監視チェック数</label>
+            <input
+              type="number"
+              x-model.number="externalChecks"
+              min="0"
+              aria-describedby="external-hint"
+            >
+            <small id="external-hint" class="form-hint">20件まで無料<br>以降20件ごとに¥1,982（税抜）</small>
+          </div>
+
+          <div class="form-group">
+            <label>トレーススパン数（M単位）</label>
+            <input
+              type="number"
+              x-model.number="traceSpans"
+              min="0"
+              step="0.1"
+              aria-describedby="trace-hint"
+            >
+            <small id="trace-hint" class="form-hint">5Mスパンまで無料<br>以降1Mスパンごとに¥300（税抜）</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="price-breakdown">
+        <h2>料金内訳</h2>
+        <table class="breakdown-table">
+          <tbody>
+            <tr>
+              <td>スタンダードホスト <span x-text="'(' + calc.standardHosts + '台)'"></span></td>
+              <td x-text="fmt(calc.standardCharge)"></td>
+            </tr>
+            <tr>
+              <td>マイクロホスト <span x-text="'(' + calc.microHosts + '台)'"></span></td>
+              <td x-text="fmt(calc.microCharge)"></td>
+            </tr>
+            <tr>
+              <td>
+                メトリック <span x-text="'(' + calc.customMetrics + '個)'"></span>
+                <div class="breakdown-note" x-text="'※含まれるメトリック: ' + calc.includedMetrics + '個'"></div>
+              </td>
+              <td x-text="fmt(calc.metricCharge)"></td>
+            </tr>
+            <tr>
+              <td>
+                外形監視 <span x-text="'(' + calc.externalChecks + 'チェック)'"></span>
+                <div class="breakdown-note" x-text="'※無料枠: 20チェック、課金対象: ' + calc.billableExternalChecks + 'チェック'"></div>
+              </td>
+              <td x-text="fmt(calc.externalCharge)"></td>
+            </tr>
+            <tr>
+              <td>
+                トレーススパン <span x-text="'(' + calc.traceSpans + 'M)'"></span>
+                <div class="breakdown-note" x-text="'※無料枠: 5M、課金対象: ' + calc.billableTraceSpans.toFixed(1) + 'M'"></div>
+              </td>
+              <td x-text="fmt(calc.traceCharge)"></td>
+            </tr>
+            <tr class="breakdown-divider">
+              <td class="breakdown-subtotal">小計（税抜）</td>
+              <td class="breakdown-subtotal" x-text="fmt(calc.subtotal)"></td>
+            </tr>
+            <tr x-show="calc.minimumApplied">
+              <td class="breakdown-minimum">最低月額料金適用</td>
+              <td class="breakdown-minimum">¥1,982</td>
+            </tr>
+            <tr>
+              <td class="breakdown-tax">消費税 (10%)</td>
+              <td class="breakdown-tax" x-text="fmt(calc.tax)"></td>
+            </tr>
+            <tr class="breakdown-divider">
+              <td></td>
+              <td></td>
+            </tr>
+            <tr class="breakdown-total">
+              <td>合計（税込）</td>
+              <td x-text="fmt(calc.totalIncludingTax)"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer>
+      <p>※この計算機は非公式ツールです。</p>
+      <p>正確な料金は<a href="https://ja.mackerel.io/pricing" target="_blank" rel="noopener noreferrer">Mackerel公式サイト</a>をご確認ください。</p>
+    </footer>
+  </div>
+
+  <script>
+    function calculator() {
+      const PRICES = {
+        STANDARD_HOST: 1982,
+        MICRO_HOST: 600,
+        CUSTOM_METRIC: 10,
+        EXTERNAL_20: 1982,
+        TRACE_1M: 300,
+        MINIMUM_CHARGE: 1982,
+        TAX_RATE: 0.10
+      };
+
+      const INCLUDED = {
+        STANDARD_METRICS: 200,
+        MICRO_METRICS: 30,
+        FREE_EXTERNAL: 20,
+        FREE_TRACE: 5
+      };
+
+      return {
+        // Input values
+        standardHosts: 0,
+        microHosts: 0,
+        customMetrics: 0,
+        externalChecks: 0,
+        traceSpans: 0,
+
+        // Computed calculation results
+        get calc() {
+          // Calculate host charges
+          const hostCharge = (this.standardHosts * PRICES.STANDARD_HOST) +
+                             (this.microHosts * PRICES.MICRO_HOST);
+
+          // Calculate included metrics
+          const includedMetrics = (this.standardHosts * INCLUDED.STANDARD_METRICS) +
+                                  (this.microHosts * INCLUDED.MICRO_METRICS);
+
+          // Calculate billable custom metrics
+          const billableMetrics = Math.max(0, this.customMetrics - includedMetrics);
+          const metricCharge = billableMetrics * PRICES.CUSTOM_METRIC;
+
+          // Calculate external monitoring charges
+          const billableExternalChecks = Math.max(0, this.externalChecks - INCLUDED.FREE_EXTERNAL);
+          const externalUnits = Math.ceil(billableExternalChecks / 20);
+          const externalCharge = externalUnits * PRICES.EXTERNAL_20;
+
+          // Calculate trace span charges
+          const billableTraceSpans = Math.max(0, this.traceSpans - INCLUDED.FREE_TRACE);
+          const traceCharge = Math.ceil(billableTraceSpans) * PRICES.TRACE_1M;
+
+          // Calculate subtotal (tax-excluded)
+          const subtotal = hostCharge + metricCharge + externalCharge + traceCharge;
+
+          // Apply minimum charge
+          const minimumApplied = subtotal < PRICES.MINIMUM_CHARGE;
+          const totalExcludingTax = Math.max(subtotal, PRICES.MINIMUM_CHARGE);
+
+          // Calculate tax and total (tax-included)
+          const tax = Math.round(totalExcludingTax * PRICES.TAX_RATE);
+          const totalIncludingTax = totalExcludingTax + tax;
+
+          return {
+            standardHosts: this.standardHosts,
+            microHosts: this.microHosts,
+            customMetrics: this.customMetrics,
+            externalChecks: this.externalChecks,
+            traceSpans: this.traceSpans,
+            standardCharge: this.standardHosts * PRICES.STANDARD_HOST,
+            microCharge: this.microHosts * PRICES.MICRO_HOST,
+            metricCharge,
+            externalCharge,
+            traceCharge,
+            includedMetrics,
+            billableMetrics,
+            billableExternalChecks,
+            billableTraceSpans,
+            subtotal,
+            minimumApplied,
+            totalExcludingTax,
+            tax,
+            totalIncludingTax
+          };
+        },
+
+        // Price formatting method
+        fmt(price) {
+          return '¥' + Math.round(price).toLocaleString('ja-JP');
+        }
+      };
+    }
+  </script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
+</body>
+</html>
