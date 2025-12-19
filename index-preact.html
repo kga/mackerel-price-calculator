@@ -433,8 +433,10 @@
                   <input
                     type="number"
                     min="0"
+                    step="1"
+                    inputmode="numeric"
                     value=${standardHosts}
-                    onInput=${e => setStandardHosts(+e.target.value || 0)}
+                    onChange=${e => setStandardHosts(+e.target.value || 0)}
                     aria-describedby="standard-hint"
                   />
                   <small id="standard-hint" class="form-hint">1台あたり¥1,982/月（税抜）<br/>200メトリック含む</small>
@@ -445,8 +447,10 @@
                   <input
                     type="number"
                     min="0"
+                    step="1"
+                    inputmode="numeric"
                     value=${microHosts}
-                    onInput=${e => setMicroHosts(+e.target.value || 0)}
+                    onChange=${e => setMicroHosts(+e.target.value || 0)}
                     aria-describedby="micro-hint"
                   />
                   <small id="micro-hint" class="form-hint">1台あたり¥600/月（税抜）<br/>30メトリック含む</small>
@@ -457,8 +461,10 @@
                   <input
                     type="number"
                     min="0"
+                    step="1"
+                    inputmode="numeric"
                     value=${customMetrics}
-                    onInput=${e => setCustomMetrics(+e.target.value || 0)}
+                    onChange=${e => setCustomMetrics(+e.target.value || 0)}
                     aria-describedby="metrics-hint"
                   />
                   <small id="metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br/>ホストに含まれる分を超えた場合のみ課金</small>
@@ -469,8 +475,10 @@
                   <input
                     type="number"
                     min="0"
+                    step="1"
+                    inputmode="numeric"
                     value=${externalChecks}
-                    onInput=${e => setExternalChecks(+e.target.value || 0)}
+                    onChange=${e => setExternalChecks(+e.target.value || 0)}
                     aria-describedby="external-hint"
                   />
                   <small id="external-hint" class="form-hint">20件まで無料<br/>以降20件ごとに¥1,982（税抜）</small>
@@ -482,8 +490,9 @@
                     type="number"
                     min="0"
                     step="0.1"
+                    inputmode="decimal"
                     value=${traceSpans}
-                    onInput=${e => setTraceSpans(+e.target.value || 0)}
+                    onChange=${e => setTraceSpans(+e.target.value || 0)}
                     aria-describedby="trace-hint"
                   />
                   <small id="trace-hint" class="form-hint">5Mスパンまで無料<br/>以降1Mスパンごとに¥300（税抜）</small>

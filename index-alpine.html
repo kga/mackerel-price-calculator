@@ -320,8 +320,10 @@
             <label>スタンダードホスト数</label>
             <input
               type="number"
-              x-model.number="standardHosts"
+              x-model.number.lazy="standardHosts"
               min="0"
+              step="1"
+              inputmode="numeric"
               aria-describedby="standard-hint"
             >
             <small id="standard-hint" class="form-hint">1台あたり¥1,982/月（税抜）<br>200メトリック含む</small>
@@ -331,8 +333,10 @@
             <label>マイクロホスト数</label>
             <input
               type="number"
-              x-model.number="microHosts"
+              x-model.number.lazy="microHosts"
               min="0"
+              step="1"
+              inputmode="numeric"
               aria-describedby="micro-hint"
             >
             <small id="micro-hint" class="form-hint">1台あたり¥600/月（税抜）<br>30メトリック含む</small>
@@ -342,8 +346,10 @@
             <label>メトリック数</label>
             <input
               type="number"
-              x-model.number="customMetrics"
+              x-model.number.lazy="customMetrics"
               min="0"
+              step="1"
+              inputmode="numeric"
               aria-describedby="metrics-hint"
             >
             <small id="metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>ホストに含まれる分を超えた場合のみ課金</small>
@@ -353,8 +359,10 @@
             <label>外形監視チェック数</label>
             <input
               type="number"
-              x-model.number="externalChecks"
+              x-model.number.lazy="externalChecks"
               min="0"
+              step="1"
+              inputmode="numeric"
               aria-describedby="external-hint"
             >
             <small id="external-hint" class="form-hint">20件まで無料<br>以降20件ごとに¥1,982（税抜）</small>
@@ -364,9 +372,10 @@
             <label>トレーススパン数（M単位）</label>
             <input
               type="number"
-              x-model.number="traceSpans"
+              x-model.number.lazy="traceSpans"
               min="0"
               step="0.1"
+              inputmode="decimal"
               aria-describedby="trace-hint"
             >
             <small id="trace-hint" class="form-hint">5Mスパンまで無料<br>以降1Mスパンごとに¥300（税抜）</small>
