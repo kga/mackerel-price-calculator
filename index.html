@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mackerel料金シミュレーター</title>
+  <title>Mackerel Pricing Calculator</title>
   <style>
     /* CSS Variables - Mackerel Official Brand Colors */
 
@@ -48,23 +48,17 @@
 
     header {
       margin: 0;
-      padding: 1rem 1rem;
+      padding: 0.5rem 1rem;
       background: var(--accent-color);
       color: var(--white);
       text-shadow: 0 1px 0 #0b8cb3;
     }
 
     header h1 {
-      font-size: 1.25rem;
+      font-size: 0.875rem;
       margin: 0;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-    }
-
-    .subtitle {
-      font-size: 0.75rem;
-      opacity: 0.9;
-      margin-top: 0.25rem;
+      font-weight: 500;
+      letter-spacing: 0;
     }
 
     main {
@@ -240,15 +234,11 @@
       }
 
       header {
-        padding: 1rem 2rem;
+        padding: 0.625rem 2rem;
       }
 
       header h1 {
-        font-size: 1.5rem;
-      }
-
-      .subtitle {
-        font-size: 0.8rem;
+        font-size: 1rem;
       }
 
       .form-grid {
@@ -269,15 +259,11 @@
       }
 
       header {
-        padding: 1rem;
+        padding: 0.5rem 1rem;
       }
 
       header h1 {
-        font-size: 1.125rem;
-      }
-
-      .subtitle {
-        font-size: 0.7rem;
+        font-size: 0.8125rem;
       }
 
       main {
@@ -308,13 +294,12 @@
 <body>
   <div class="container">
     <header>
-      <h1>Mackerel料金シミュレーター</h1>
-      <p class="subtitle">料金は税抜き表示です（最終的に税込み金額も表示されます）</p>
+      <h1>Mackerel Pricing Calculator</h1>
     </header>
 
     <main>
       <section class="calculator-form">
-        <h2>利用状況を入力</h2>
+        <h2>利用数を入力</h2>
         <div class="form-grid">
           <div class="form-group">
             <label for="standard-hosts">スタンダードホスト数</label>
@@ -447,7 +432,7 @@
     </main>
 
     <footer>
-      <p>※この計算機は非公式ツールです。</p>
+      <p>※このツールは非公式です。</p>
       <p>正確な料金は<a href="https://ja.mackerel.io/pricing" target="_blank" rel="noopener noreferrer">Mackerel公式サイト</a>をご確認ください。</p>
     </footer>
   </div>
