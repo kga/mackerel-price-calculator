@@ -358,7 +358,7 @@
               value="0"
               aria-describedby="external-hint"
             >
-            <small id="external-hint" class="form-hint">20件まで無料<br>以降20件ごとに¥1,982（税抜）</small>
+            <small id="external-hint" class="form-hint">20件まで無料<br>以降20件ごとにSH1台換算 (¥1,982)</small>
           </div>
 
           <div class="form-group">
@@ -444,12 +444,11 @@
   <script>
     // Constants - Base prices (tax-excluded)
     const PRICES = {
-      STANDARD_HOST: 1982,      // ¥2,180 / 1.10
-      MICRO_HOST: 600,          // ¥660 / 1.10
-      CUSTOM_METRIC: 10,        // ¥11 / 1.10
-      EXTERNAL_20: 1982,        // ¥2,180 / 1.10
-      TRACE_1M: 300,            // ¥330 / 1.10
-      MINIMUM_CHARGE: 1982,     // ¥2,180 / 1.10
+      STANDARD_HOST: 1982,      // 税抜 ¥1,982 (税込 ¥2,180)
+      MICRO_HOST: 600,          // 税抜 ¥600 (税込 ¥660)
+      CUSTOM_METRIC: 10,        // 税抜 ¥10 (税込 ¥11)
+      TRACE_1M: 300,            // 税抜 ¥300 (税込 ¥330) per 1M spans
+      MINIMUM_CHARGE: 1982,     // 税抜 ¥1,982 (税込 ¥2,180)
       TAX_RATE: 0.10
     };
 
@@ -504,9 +503,10 @@
       const metricCharge = billableMetrics * PRICES.CUSTOM_METRIC;
 
       // Calculate external monitoring charges
+      // (外形監視利用数 - 20) ÷ 20 を切り上げてスタンダードホストとして換算
       const billableExternalChecks = Math.max(0, externalChecks - INCLUDED.FREE_EXTERNAL);
-      const externalUnits = Math.ceil(billableExternalChecks / 20);
-      const externalCharge = externalUnits * PRICES.EXTERNAL_20;
+      const externalHostEquivalent = billableExternalChecks > 0 ? Math.ceil(billableExternalChecks / 20) : 0;
+      const externalCharge = externalHostEquivalent * PRICES.STANDARD_HOST;
 
       // Calculate trace span charges
       const billableTraceSpans = Math.max(0, traceSpans - INCLUDED.FREE_TRACE);
@@ -537,6 +537,7 @@
         includedMetrics,
         billableMetrics,
         billableExternalChecks,
+        externalHostEquivalent,
         billableTraceSpans,
         subtotal,
         minimumApplied,
@@ -566,7 +567,8 @@
       document.getElementById('external-count').textContent = `(${result.externalChecks}チェック)`;
       document.getElementById('external-price').textContent = formatPrice(result.externalCharge);
       document.getElementById('external-note').textContent =
-        `※無料枠: ${INCLUDED.FREE_EXTERNAL}チェック、課金対象: ${result.billableExternalChecks}チェック`;
+        `※無料枠: ${INCLUDED.FREE_EXTERNAL}、課金対象: ${result.billableExternalChecks}` +
+        (result.externalHostEquivalent > 0 ? ` (SH${result.externalHostEquivalent}台換算)` : '');
 
       // Update trace spans
       document.getElementById('trace-count').textContent = `(${result.traceSpans}M)`;
