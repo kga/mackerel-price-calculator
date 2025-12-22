@@ -515,9 +515,13 @@
       // Calculate subtotal (tax-excluded)
       const subtotal = hostCharge + metricCharge + externalCharge + traceCharge;
 
-      // Apply minimum charge (only if there is any usage)
-      const minimumApplied = subtotal > 0 && subtotal < PRICES.MINIMUM_CHARGE;
-      const totalExcludingTax = subtotal > 0 ? Math.max(subtotal, PRICES.MINIMUM_CHARGE) : 0;
+      // Check if there is any usage of billable features
+      const hasUsage = standardHosts > 0 || microHosts > 0 || customMetrics > 0 ||
+                       externalChecks > 0 || traceSpans > 0;
+
+      // Apply minimum charge (if there is any usage, even if subtotal is 0)
+      const minimumApplied = hasUsage && subtotal < PRICES.MINIMUM_CHARGE;
+      const totalExcludingTax = hasUsage ? Math.max(subtotal, PRICES.MINIMUM_CHARGE) : 0;
 
       // Calculate tax and total (tax-included)
       const tax = Math.round(totalExcludingTax * PRICES.TAX_RATE);
