@@ -95,6 +95,29 @@
       gap: 1.5rem;
     }
 
+    .form-section {
+      grid-column: 1 / -1;
+      margin-top: 1.5rem;
+    }
+
+    .form-section:first-child {
+      margin-top: 0;
+    }
+
+    .form-section-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color-light);
+    }
+
+    .form-section-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
     .form-group {
       display: flex;
       flex-direction: column;
@@ -138,32 +161,31 @@
     /* Details/Summary Styles */
     details.form-details {
       margin-top: 0.5rem;
-      border: 1px solid var(--border-color-light);
-      border-radius: 4px;
-      background-color: var(--mackerel-bg);
+      border: none;
+      background-color: transparent;
     }
 
     details.form-details summary {
       cursor: pointer;
-      padding: 0.75rem;
-      font-weight: 700;
-      color: var(--text-secondary);
+      padding: 0.5rem 0;
+      font-weight: 600;
+      color: var(--text-tertiary);
       font-size: 0.875rem;
       user-select: none;
-      transition: background-color 0.15s ease;
+      transition: color 0.15s ease;
     }
 
     details.form-details summary:hover {
-      background-color: var(--mackerel-bg-alt);
+      color: var(--text-secondary);
     }
 
     details.form-details[open] summary {
-      border-bottom: 1px solid var(--border-color-light);
+      margin-bottom: 0.75rem;
     }
 
     details.form-details .details-content {
-      padding: 1rem;
-      background-color: var(--white);
+      padding: 0;
+      background-color: transparent;
     }
 
     details.form-details .details-description {
@@ -288,6 +310,11 @@
         gap: 2rem;
       }
 
+      .form-section-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+      }
+
       main {
         grid-template-columns: 1fr 1fr;
         gap: 2.5rem;
@@ -343,108 +370,126 @@
       <section class="calculator-form">
         <h2>利用数を入力</h2>
         <div class="form-grid">
-          <div class="form-group">
-            <label for="standard-hosts">スタンダードホスト数</label>
-            <input
-              type="number"
-              id="standard-hosts"
-              min="0"
-              step="1"
-              inputmode="numeric"
-              value="0"
-              aria-describedby="standard-hint"
-            >
-            <small id="standard-hint" class="form-hint">1台あたり¥1,982/月（税抜）<br>200メトリック含む</small>
-          </div>
-
-          <div class="form-group">
-            <label for="micro-hosts">マイクロホスト数</label>
-            <input
-              type="number"
-              id="micro-hosts"
-              min="0"
-              step="1"
-              inputmode="numeric"
-              value="0"
-              aria-describedby="micro-hint"
-            >
-            <small id="micro-hint" class="form-hint">1台あたり¥600/月（税抜）<br>30メトリック含む</small>
-          </div>
-
-          <div class="form-group">
-            <label for="service-metrics">サービスメトリック数</label>
-            <input
-              type="number"
-              id="service-metrics"
-              min="0"
-              step="1"
-              inputmode="numeric"
-              value="0"
-              aria-describedby="service-metrics-hint"
-            >
-            <small id="service-metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>全て課金対象</small>
-          </div>
-
-          <div class="form-group">
-            <label for="labeled-metrics">ラベル付きメトリック数</label>
-            <input
-              type="number"
-              id="labeled-metrics"
-              min="0"
-              step="1"
-              inputmode="numeric"
-              value="0"
-              aria-describedby="labeled-metrics-hint"
-            >
-            <small id="labeled-metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>全て課金対象</small>
-          </div>
-
-          <div class="form-group">
-            <details class="form-details">
-              <summary>詳細設定: ホストメトリック</summary>
-              <div class="details-content">
-                <p class="details-description">ホストの無料枠（SH: 200個/台、Micro: 30個/台）を超えた分のみ課金されます</p>
-                <label for="host-metrics">ホストメトリック数</label>
+          <!-- ホストセクション -->
+          <div class="form-section">
+            <h3 class="form-section-title">ホスト</h3>
+            <div class="form-section-grid">
+              <div class="form-group">
+                <label for="standard-hosts">スタンダードホスト数</label>
                 <input
                   type="number"
-                  id="host-metrics"
+                  id="standard-hosts"
                   min="0"
                   step="1"
                   inputmode="numeric"
                   value="0"
-                  aria-describedby="host-metrics-hint"
+                  aria-describedby="standard-hint"
                 >
-                <small id="host-metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>ホストに含まれる分を超えた場合のみ課金</small>
+                <small id="standard-hint" class="form-hint">1台あたり¥1,982/月（税抜）<br>200メトリック含む</small>
               </div>
-            </details>
+
+              <div class="form-group">
+                <label for="micro-hosts">マイクロホスト数</label>
+                <input
+                  type="number"
+                  id="micro-hosts"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                  value="0"
+                  aria-describedby="micro-hint"
+                >
+                <small id="micro-hint" class="form-hint">1台あたり¥600/月（税抜）<br>30メトリック含む</small>
+              </div>
+
+              <div class="form-group">
+                <details class="form-details">
+                  <summary>詳細設定: ホストメトリック</summary>
+                  <div class="details-content">
+                    <p class="details-description">ホストの無料枠（SH: 200個/台、Micro: 30個/台）を超えた分のみ課金されます</p>
+                    <label for="host-metrics">ホストメトリック数</label>
+                    <input
+                      type="number"
+                      id="host-metrics"
+                      min="0"
+                      step="1"
+                      inputmode="numeric"
+                      value="0"
+                      aria-describedby="host-metrics-hint"
+                    >
+                    <small id="host-metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>ホストに含まれる分を超えた場合のみ課金</small>
+                  </div>
+                </details>
+              </div>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="external-checks">外形監視チェック数</label>
-            <input
-              type="number"
-              id="external-checks"
-              min="0"
-              step="1"
-              inputmode="numeric"
-              value="0"
-              aria-describedby="external-hint"
-            >
-            <small id="external-hint" class="form-hint">20件まで無料<br>以降20件ごとにSH1台換算 (¥1,982)</small>
+          <!-- メトリック・スパンセクション -->
+          <div class="form-section">
+            <h3 class="form-section-title">メトリック・スパン</h3>
+            <div class="form-section-grid">
+              <div class="form-group">
+                <label for="service-metrics">サービスメトリック数</label>
+                <input
+                  type="number"
+                  id="service-metrics"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                  value="0"
+                  aria-describedby="service-metrics-hint"
+                >
+                <small id="service-metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>全て課金対象</small>
+              </div>
+
+              <div class="form-group">
+                <label for="labeled-metrics">ラベル付きメトリック数</label>
+                <input
+                  type="number"
+                  id="labeled-metrics"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                  value="0"
+                  aria-describedby="labeled-metrics-hint"
+                >
+                <small id="labeled-metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>全て課金対象</small>
+              </div>
+
+              <div class="form-group">
+                <label for="trace-spans">トレーススパン数（M単位）</label>
+                <input
+                  type="number"
+                  id="trace-spans"
+                  min="0"
+                  step="0.1"
+                  inputmode="decimal"
+                  value="0"
+                  aria-describedby="trace-hint"
+                >
+                <small id="trace-hint" class="form-hint">5Mスパンまで無料<br>以降1Mスパンごとに¥300（税抜）</small>
+              </div>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="trace-spans">トレーススパン数（M単位）</label>
-            <input
-              type="number"
-              id="trace-spans"
-              min="0"
-              step="0.1"
-              inputmode="decimal"
-              value="0"
-              aria-describedby="trace-hint"
-            >
-            <small id="trace-hint" class="form-hint">5Mスパンまで無料<br>以降1Mスパンごとに¥300（税抜）</small>
+          <!-- 監視セクション -->
+          <div class="form-section">
+            <h3 class="form-section-title">監視</h3>
+            <div class="form-section-grid">
+              <div class="form-group">
+                <label for="external-checks">外形監視チェック数</label>
+                <input
+                  type="number"
+                  id="external-checks"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                  value="0"
+                  aria-describedby="external-hint"
+                >
+                <small id="external-hint" class="form-hint">20件まで無料<br>以降20件ごとにSH1台換算 (¥1,982)</small>
+              </div>
+            </div>
           </div>
         </div>
       </section>
