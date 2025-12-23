@@ -489,6 +489,20 @@
                 >
                 <small id="external-hint" class="form-hint">20件まで無料<br>以降20件ごとにSH1台換算 (¥1,982)</small>
               </div>
+
+              <div class="form-group">
+                <label for="anomaly-detection">ロール内異常検知対象ホスト数</label>
+                <input
+                  type="number"
+                  id="anomaly-detection"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                  value="0"
+                  aria-describedby="anomaly-hint"
+                >
+                <small id="anomaly-hint" class="form-hint">5台ごとにSH1台換算 (¥1,982)</small>
+              </div>
             </div>
           </div>
         </div>
@@ -519,6 +533,13 @@
                 <div class="breakdown-note" id="external-note">※無料枠: 20チェック、課金対象: 0チェック</div>
               </td>
               <td id="external-price">¥0</td>
+            </tr>
+            <tr id="row-anomaly">
+              <td>
+                ロール内異常検知 <span id="anomaly-count">(0台)</span>
+                <div class="breakdown-note" id="anomaly-note">※5台ごとにSH1台換算</div>
+              </td>
+              <td id="anomaly-price">¥0</td>
             </tr>
             <tr id="row-trace">
               <td>
@@ -584,6 +605,7 @@
       labeledMetrics: document.getElementById('labeled-metrics'),
       hostMetrics: document.getElementById('host-metrics'),
       externalChecks: document.getElementById('external-checks'),
+      anomalyDetection: document.getElementById('anomaly-detection'),
       traceSpans: document.getElementById('trace-spans')
     };
 
@@ -609,6 +631,7 @@
       const labeledMetrics = parseInt(inputs.labeledMetrics.value) || 0;
       const hostMetrics = parseInt(inputs.hostMetrics.value) || 0;
       const externalChecks = parseInt(inputs.externalChecks.value) || 0;
+      const anomalyDetection = parseInt(inputs.anomalyDetection.value) || 0;
       const traceSpans = parseFloat(inputs.traceSpans.value) || 0;
 
       // Calculate host charges
@@ -637,16 +660,22 @@
       const externalHostEquivalent = billableExternalChecks > 0 ? Math.ceil(billableExternalChecks / 20) : 0;
       const externalCharge = externalHostEquivalent * PRICES.STANDARD_HOST;
 
+      // Calculate anomaly detection charges
+      // ロール内異常検知対象ホスト数 ÷ 5 を切り上げてスタンダードホストとして換算
+      const anomalyHostEquivalent = anomalyDetection > 0 ? Math.ceil(anomalyDetection / 5) : 0;
+      const anomalyCharge = anomalyHostEquivalent * PRICES.STANDARD_HOST;
+
       // Calculate trace span charges
       const billableTraceSpans = Math.max(0, traceSpans - INCLUDED.FREE_TRACE);
       const traceCharge = Math.ceil(billableTraceSpans) * PRICES.TRACE_1M;
 
       // Calculate subtotal (tax-excluded)
-      const subtotal = hostCharge + totalMetricCharge + externalCharge + traceCharge;
+      const subtotal = hostCharge + totalMetricCharge + externalCharge + anomalyCharge + traceCharge;
 
       // Check if there is any usage of billable features
       const hasUsage = standardHosts > 0 || microHosts > 0 || serviceMetrics > 0 ||
-                       labeledMetrics > 0 || hostMetrics > 0 || externalChecks > 0 || traceSpans > 0;
+                       labeledMetrics > 0 || hostMetrics > 0 || externalChecks > 0 ||
+                       anomalyDetection > 0 || traceSpans > 0;
 
       // Apply minimum charge (if there is any usage, even if subtotal is 0)
       const minimumApplied = hasUsage && subtotal < PRICES.MINIMUM_CHARGE;
@@ -664,6 +693,7 @@
         hostMetrics,
         totalMetrics,
         externalChecks,
+        anomalyDetection,
         traceSpans,
         standardCharge: standardHosts * PRICES.STANDARD_HOST,
         microCharge: microHosts * PRICES.MICRO_HOST,
@@ -672,11 +702,13 @@
         hostMetricCharge,
         totalMetricCharge,
         externalCharge,
+        anomalyCharge,
         traceCharge,
         includedMetrics,
         billableHostMetrics,
         billableExternalChecks,
         externalHostEquivalent,
+        anomalyHostEquivalent,
         billableTraceSpans,
         subtotal,
         minimumApplied,
@@ -711,6 +743,13 @@
       document.getElementById('external-note').textContent =
         `※無料枠: ${INCLUDED.FREE_EXTERNAL}、課金対象: ${result.billableExternalChecks}` +
         (result.externalHostEquivalent > 0 ? ` (SH${result.externalHostEquivalent}台換算)` : '');
+
+      // Update anomaly detection
+      document.getElementById('anomaly-count').textContent = `(${result.anomalyDetection}台)`;
+      document.getElementById('anomaly-price').textContent = formatPrice(result.anomalyCharge);
+      document.getElementById('anomaly-note').textContent =
+        `※5台ごとにSH1台換算` +
+        (result.anomalyHostEquivalent > 0 ? ` (SH${result.anomalyHostEquivalent}台換算)` : '');
 
       // Update trace spans
       document.getElementById('trace-count').textContent = `(${result.traceSpans}M)`;
