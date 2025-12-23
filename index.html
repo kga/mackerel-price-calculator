@@ -214,26 +214,48 @@
       font-weight: 700;
     }
 
-    .breakdown-table {
-      width: 100%;
-      border-collapse: collapse;
+    .breakdown-content {
+      display: grid;
+      gap: 1.5rem;
     }
 
-    .breakdown-table td {
+    .breakdown-section {
+      margin-top: 1.5rem;
+    }
+
+    .breakdown-section:first-child {
+      margin-top: 0;
+    }
+
+    .breakdown-section-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      padding-left: 0.75rem;
+      border-left: 4px solid var(--accent-color-light);
+    }
+
+    .breakdown-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
       padding: 1rem 0;
       border-bottom: 1px solid var(--mackerel-bg-alt);
+    }
+
+    .breakdown-label {
+      color: var(--text-secondary);
       font-size: 1rem;
     }
 
-    .breakdown-table td:first-child {
-      color: var(--text-secondary);
-    }
-
-    .breakdown-table td:last-child {
+    .breakdown-value {
       text-align: right;
       font-weight: 700;
       color: var(--text-primary);
       font-size: 1.125rem;
+      flex-shrink: 0;
+      margin-left: 1rem;
     }
 
     .breakdown-note {
@@ -244,33 +266,42 @@
     }
 
     .breakdown-divider {
-      border-bottom: 2px solid var(--border-color-light) !important;
+      border-bottom: 2px solid var(--border-color-light);
     }
 
     .breakdown-subtotal {
       font-weight: 700;
-      font-size: 1.125rem;
-      color: var(--text-primary) !important;
     }
 
-    .breakdown-minimum {
-      color: var(--accent-color);
+    .breakdown-subtotal .breakdown-label,
+    .breakdown-subtotal .breakdown-value {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 1.125rem;
+    }
+
+    .breakdown-minimum .breakdown-label,
+    .breakdown-minimum .breakdown-value {
+      color: var(--text-primary);
       font-style: italic;
     }
 
-    .breakdown-tax {
+    .breakdown-tax .breakdown-label,
+    .breakdown-tax .breakdown-value {
       color: var(--text-tertiary);
     }
 
     .breakdown-total {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--accent-color);
+      border-bottom: none;
+      padding-top: 1.5rem;
+      padding-bottom: 0.5rem;
     }
 
-    .breakdown-total td {
-      padding: 1.5rem 0 0.5rem 0;
-      border-bottom: none !important;
+    .breakdown-total .breakdown-label,
+    .breakdown-total .breakdown-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
     }
 
     /* Footer */
@@ -512,66 +543,83 @@
 
       <section class="price-breakdown">
         <h2>料金内訳</h2>
-        <table class="breakdown-table">
-          <tbody>
-            <tr id="row-standard">
-              <td>スタンダードホスト <span id="standard-count">(0台)</span></td>
-              <td id="standard-price">¥0</td>
-            </tr>
-            <tr id="row-micro">
-              <td>マイクロホスト <span id="micro-count">(0台)</span></td>
-              <td id="micro-price">¥0</td>
-            </tr>
-            <tr id="row-metrics">
-              <td>
+        <div class="breakdown-content">
+          <!-- ホストセクション -->
+          <div class="breakdown-section">
+            <h3 class="breakdown-section-title">ホスト</h3>
+            <div class="breakdown-item" id="row-standard">
+              <div class="breakdown-label">スタンダードホスト <span id="standard-count">(0台)</span></div>
+              <div class="breakdown-value" id="standard-price">¥0</div>
+            </div>
+            <div class="breakdown-item" id="row-micro">
+              <div class="breakdown-label">マイクロホスト <span id="micro-count">(0台)</span></div>
+              <div class="breakdown-value" id="micro-price">¥0</div>
+            </div>
+          </div>
+
+          <!-- メトリック・スパンセクション -->
+          <div class="breakdown-section">
+            <h3 class="breakdown-section-title">メトリック・スパン</h3>
+            <div class="breakdown-item" id="row-metrics">
+              <div class="breakdown-label">
                 メトリック <span id="metrics-count">(0個)</span>
                 <div class="breakdown-note" id="metrics-note">※含まれるメトリック: 0個</div>
-              </td>
-              <td id="metrics-price">¥0</td>
-            </tr>
-            <tr id="row-external">
-              <td>
-                外形監視 <span id="external-count">(0URL)</span>
-                <div class="breakdown-note" id="external-note">※無料枠: 20URL、課金対象: 0URL</div>
-              </td>
-              <td id="external-price">¥0</td>
-            </tr>
-            <tr id="row-anomaly">
-              <td>
-                ロール内異常検知 <span id="anomaly-count">(0台)</span>
-                <div class="breakdown-note" id="anomaly-note">※5台ごとにSH1台換算</div>
-              </td>
-              <td id="anomaly-price">¥0</td>
-            </tr>
-            <tr id="row-trace">
-              <td>
+              </div>
+              <div class="breakdown-value" id="metrics-price">¥0</div>
+            </div>
+            <div class="breakdown-item" id="row-trace">
+              <div class="breakdown-label">
                 トレーススパン <span id="trace-count">(0M)</span>
                 <div class="breakdown-note" id="trace-note">※無料枠: 5M、課金対象: 0M</div>
-              </td>
-              <td id="trace-price">¥0</td>
-            </tr>
-            <tr class="breakdown-divider">
-              <td class="breakdown-subtotal">小計（税抜）</td>
-              <td class="breakdown-subtotal" id="subtotal-price">¥0</td>
-            </tr>
-            <tr id="row-minimum" style="display: none;">
-              <td class="breakdown-minimum">最低月額料金適用</td>
-              <td class="breakdown-minimum" id="minimum-price">¥1,982</td>
-            </tr>
-            <tr>
-              <td class="breakdown-tax">消費税 (10%)</td>
-              <td class="breakdown-tax" id="tax-price">¥0</td>
-            </tr>
-            <tr class="breakdown-divider">
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="breakdown-total">
-              <td>合計（税込）</td>
-              <td id="total-price">¥0</td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+              <div class="breakdown-value" id="trace-price">¥0</div>
+            </div>
+          </div>
+
+          <!-- 監視セクション -->
+          <div class="breakdown-section">
+            <h3 class="breakdown-section-title">監視</h3>
+            <div class="breakdown-item" id="row-external">
+              <div class="breakdown-label">
+                外形監視 <span id="external-count">(0URL)</span>
+                <div class="breakdown-note" id="external-note">※無料枠: 20URL、課金対象: 0URL</div>
+              </div>
+              <div class="breakdown-value" id="external-price">¥0</div>
+            </div>
+            <div class="breakdown-item" id="row-anomaly">
+              <div class="breakdown-label">
+                ロール内異常検知 <span id="anomaly-count">(0台)</span>
+                <div class="breakdown-note" id="anomaly-note">※5台ごとにSH1台換算</div>
+              </div>
+              <div class="breakdown-value" id="anomaly-price">¥0</div>
+            </div>
+          </div>
+
+          <!-- 合計セクション -->
+          <div class="breakdown-section">
+            <h3 class="breakdown-section-title">合計</h3>
+            <div class="breakdown-item breakdown-subtotal breakdown-divider">
+              <div class="breakdown-label">小計（税抜）</div>
+              <div class="breakdown-value" id="subtotal-price">¥0</div>
+            </div>
+            <div class="breakdown-item breakdown-minimum" id="row-minimum" style="display: none;">
+              <div class="breakdown-label">最低月額料金適用</div>
+              <div class="breakdown-value" id="minimum-price">¥1,982</div>
+            </div>
+            <div class="breakdown-item breakdown-tax">
+              <div class="breakdown-label">消費税 (10%)</div>
+              <div class="breakdown-value" id="tax-price">¥0</div>
+            </div>
+            <div class="breakdown-item breakdown-divider">
+              <div class="breakdown-label"></div>
+              <div class="breakdown-value"></div>
+            </div>
+            <div class="breakdown-item breakdown-total">
+              <div class="breakdown-label">合計（税込）</div>
+              <div class="breakdown-value" id="total-price">¥0</div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
@@ -765,7 +813,7 @@
       // Show/hide minimum charge row
       const minimumRow = document.getElementById('row-minimum');
       if (result.minimumApplied) {
-        minimumRow.style.display = 'table-row';
+        minimumRow.style.display = 'flex';
       } else {
         minimumRow.style.display = 'none';
       }
