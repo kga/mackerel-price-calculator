@@ -135,6 +135,44 @@
       line-height: 1.6;
     }
 
+    /* Details/Summary Styles */
+    details.form-details {
+      margin-top: 0.5rem;
+      border: 1px solid var(--border-color-light);
+      border-radius: 4px;
+      background-color: var(--mackerel-bg);
+    }
+
+    details.form-details summary {
+      cursor: pointer;
+      padding: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      user-select: none;
+      transition: background-color 0.15s ease;
+    }
+
+    details.form-details summary:hover {
+      background-color: var(--mackerel-bg-alt);
+    }
+
+    details.form-details[open] summary {
+      border-bottom: 1px solid var(--border-color-light);
+    }
+
+    details.form-details .details-content {
+      padding: 1rem;
+      background-color: var(--white);
+    }
+
+    details.form-details .details-description {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+    }
+
     /* Price Breakdown Section */
     .price-breakdown {
       background: var(--white);
@@ -334,17 +372,51 @@
           </div>
 
           <div class="form-group">
-            <label for="custom-metrics">メトリック数</label>
+            <label for="service-metrics">サービスメトリック数</label>
             <input
               type="number"
-              id="custom-metrics"
+              id="service-metrics"
               min="0"
               step="1"
               inputmode="numeric"
               value="0"
-              aria-describedby="metrics-hint"
+              aria-describedby="service-metrics-hint"
             >
-            <small id="metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>ホストに含まれる分を超えた場合のみ課金</small>
+            <small id="service-metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>全て課金対象</small>
+          </div>
+
+          <div class="form-group">
+            <label for="labeled-metrics">ラベル付きメトリック数</label>
+            <input
+              type="number"
+              id="labeled-metrics"
+              min="0"
+              step="1"
+              inputmode="numeric"
+              value="0"
+              aria-describedby="labeled-metrics-hint"
+            >
+            <small id="labeled-metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>全て課金対象</small>
+          </div>
+
+          <div class="form-group">
+            <details class="form-details">
+              <summary>詳細設定: ホストメトリック</summary>
+              <div class="details-content">
+                <p class="details-description">ホストの無料枠（SH: 200個/台、Micro: 30個/台）を超えた分のみ課金されます</p>
+                <label for="host-metrics">ホストメトリック数</label>
+                <input
+                  type="number"
+                  id="host-metrics"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                  value="0"
+                  aria-describedby="host-metrics-hint"
+                >
+                <small id="host-metrics-hint" class="form-hint">1個あたり¥10/月（税抜）<br>ホストに含まれる分を超えた場合のみ課金</small>
+              </div>
+            </details>
           </div>
 
           <div class="form-group">
@@ -463,7 +535,9 @@
     const inputs = {
       standardHosts: document.getElementById('standard-hosts'),
       microHosts: document.getElementById('micro-hosts'),
-      customMetrics: document.getElementById('custom-metrics'),
+      serviceMetrics: document.getElementById('service-metrics'),
+      labeledMetrics: document.getElementById('labeled-metrics'),
+      hostMetrics: document.getElementById('host-metrics'),
       externalChecks: document.getElementById('external-checks'),
       traceSpans: document.getElementById('trace-spans')
     };
@@ -486,7 +560,9 @@
       // Get input values
       const standardHosts = parseInt(inputs.standardHosts.value) || 0;
       const microHosts = parseInt(inputs.microHosts.value) || 0;
-      const customMetrics = parseInt(inputs.customMetrics.value) || 0;
+      const serviceMetrics = parseInt(inputs.serviceMetrics.value) || 0;
+      const labeledMetrics = parseInt(inputs.labeledMetrics.value) || 0;
+      const hostMetrics = parseInt(inputs.hostMetrics.value) || 0;
       const externalChecks = parseInt(inputs.externalChecks.value) || 0;
       const traceSpans = parseFloat(inputs.traceSpans.value) || 0;
 
@@ -494,13 +570,21 @@
       const hostCharge = (standardHosts * PRICES.STANDARD_HOST) +
                          (microHosts * PRICES.MICRO_HOST);
 
-      // Calculate included metrics
+      // Calculate service metrics charge (all billable)
+      const serviceMetricCharge = serviceMetrics * PRICES.CUSTOM_METRIC;
+
+      // Calculate labeled metrics charge (all billable)
+      const labeledMetricCharge = labeledMetrics * PRICES.CUSTOM_METRIC;
+
+      // Calculate host metrics charge (only excess over included amount)
       const includedMetrics = (standardHosts * INCLUDED.STANDARD_METRICS) +
                               (microHosts * INCLUDED.MICRO_METRICS);
+      const billableHostMetrics = Math.max(0, hostMetrics - includedMetrics);
+      const hostMetricCharge = billableHostMetrics * PRICES.CUSTOM_METRIC;
 
-      // Calculate billable custom metrics
-      const billableMetrics = Math.max(0, customMetrics - includedMetrics);
-      const metricCharge = billableMetrics * PRICES.CUSTOM_METRIC;
+      // Total metric charge
+      const totalMetricCharge = serviceMetricCharge + labeledMetricCharge + hostMetricCharge;
+      const totalMetrics = serviceMetrics + labeledMetrics + hostMetrics;
 
       // Calculate external monitoring charges
       // (外形監視利用数 - 20) ÷ 20 を切り上げてスタンダードホストとして換算
@@ -513,11 +597,11 @@
       const traceCharge = Math.ceil(billableTraceSpans) * PRICES.TRACE_1M;
 
       // Calculate subtotal (tax-excluded)
-      const subtotal = hostCharge + metricCharge + externalCharge + traceCharge;
+      const subtotal = hostCharge + totalMetricCharge + externalCharge + traceCharge;
 
       // Check if there is any usage of billable features
-      const hasUsage = standardHosts > 0 || microHosts > 0 || customMetrics > 0 ||
-                       externalChecks > 0 || traceSpans > 0;
+      const hasUsage = standardHosts > 0 || microHosts > 0 || serviceMetrics > 0 ||
+                       labeledMetrics > 0 || hostMetrics > 0 || externalChecks > 0 || traceSpans > 0;
 
       // Apply minimum charge (if there is any usage, even if subtotal is 0)
       const minimumApplied = hasUsage && subtotal < PRICES.MINIMUM_CHARGE;
@@ -530,16 +614,22 @@
       return {
         standardHosts,
         microHosts,
-        customMetrics,
+        serviceMetrics,
+        labeledMetrics,
+        hostMetrics,
+        totalMetrics,
         externalChecks,
         traceSpans,
         standardCharge: standardHosts * PRICES.STANDARD_HOST,
         microCharge: microHosts * PRICES.MICRO_HOST,
-        metricCharge,
+        serviceMetricCharge,
+        labeledMetricCharge,
+        hostMetricCharge,
+        totalMetricCharge,
         externalCharge,
         traceCharge,
         includedMetrics,
-        billableMetrics,
+        billableHostMetrics,
         billableExternalChecks,
         externalHostEquivalent,
         billableTraceSpans,
@@ -561,11 +651,14 @@
       document.getElementById('micro-count').textContent = `(${result.microHosts}台)`;
       document.getElementById('micro-price').textContent = formatPrice(result.microCharge);
 
-      // Update custom metrics
-      document.getElementById('metrics-count').textContent = `(${result.customMetrics}個)`;
-      document.getElementById('metrics-price').textContent = formatPrice(result.metricCharge);
+      // Update metrics (combined)
+      document.getElementById('metrics-count').textContent = `(合計${result.totalMetrics}個)`;
+      document.getElementById('metrics-price').textContent = formatPrice(result.totalMetricCharge);
       document.getElementById('metrics-note').textContent =
-        `※含まれるメトリック: ${result.includedMetrics}個`;
+        `※サービス: ${result.serviceMetrics}個、` +
+        `ラベル付き: ${result.labeledMetrics}個、` +
+        `ホスト: ${result.hostMetrics}個 ` +
+        `(含まれる分: ${result.includedMetrics}個、課金対象: ${result.billableHostMetrics}個)`;
 
       // Update external monitoring
       document.getElementById('external-count').textContent = `(${result.externalChecks}チェック)`;
