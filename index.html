@@ -151,6 +151,12 @@
       box-shadow: 0 0 0 3px rgba(29, 199, 250, 0.08);
     }
 
+    .form-group input:disabled {
+      background-color: var(--mackerel-bg-alt);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
     .form-hint {
       font-size: 0.75rem;
       color: var(--text-tertiary);
@@ -825,10 +831,25 @@
       document.getElementById('total-price').textContent = formatPrice(result.totalIncludingTax);
     }
 
+    // Manage host-metrics input state based on host availability
+    function updateHostMetricsInputState(result) {
+      const hasHosts = result.standardHosts > 0 || result.microHosts > 0;
+
+      if (hasHosts) {
+        // Enable input when hosts exist
+        inputs.hostMetrics.disabled = false;
+      } else {
+        // Disable input and reset value when no hosts
+        inputs.hostMetrics.disabled = true;
+        inputs.hostMetrics.value = '0';
+      }
+    }
+
     // Main update function
     function updateCalculation() {
       const result = calculatePrice();
       updateBreakdownDisplay(result);
+      updateHostMetricsInputState(result);
     }
 
     // Initialize
