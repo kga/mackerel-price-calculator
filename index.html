@@ -439,8 +439,8 @@
                 <details class="form-details">
                   <summary>詳細設定: ホストメトリック</summary>
                   <div class="details-content">
-                    <p class="details-description">ホストの無料枠（SH: 200個/台、MH: 30個/台）を超えた分のみ課金されます</p>
-                    <label for="host-metrics">ホストメトリック数</label>
+                    <p class="details-description">無料枠を超過したホストメトリック数を入力してください（無料枠: SH 200個/台、MH 30個/台）</p>
+                    <label for="host-metrics">超過ホストメトリック数</label>
                     <input
                       type="number"
                       id="host-metrics"
@@ -694,11 +694,13 @@
       // Calculate labeled metrics charge (all billable)
       const labeledMetricCharge = labeledMetrics * PRICES.CUSTOM_METRIC;
 
-      // Calculate host metrics charge (only excess over included amount)
+      // Calculate host metrics charge (user inputs excess metrics directly)
+      const excessHostMetrics = hostMetrics; // User inputs excess directly
+      const hostMetricCharge = excessHostMetrics * PRICES.CUSTOM_METRIC;
+
+      // Calculate included metrics for display reference only
       const includedMetrics = (standardHosts * INCLUDED.STANDARD_METRICS) +
                               (microHosts * INCLUDED.MICRO_METRICS);
-      const billableHostMetrics = Math.max(0, hostMetrics - includedMetrics);
-      const hostMetricCharge = billableHostMetrics * PRICES.CUSTOM_METRIC;
 
       // Total metric charge
       const totalMetricCharge = serviceMetricCharge + labeledMetricCharge + hostMetricCharge;
@@ -755,7 +757,7 @@
         anomalyCharge,
         traceCharge,
         includedMetrics,
-        billableHostMetrics,
+        excessHostMetrics,
         billableExternalChecks,
         externalHostEquivalent,
         anomalyHostEquivalent,
@@ -784,8 +786,8 @@
       document.getElementById('metrics-note').textContent =
         `※サービス: ${result.serviceMetrics}、` +
         `ラベル付き: ${result.labeledMetrics}、` +
-        `ホスト: ${result.hostMetrics} ` +
-        `(含まれる分: ${result.includedMetrics}、課金対象: ${result.billableHostMetrics})`;
+        `ホスト超過分: ${result.excessHostMetrics}` +
+        (result.includedMetrics > 0 ? ` (無料枠: ${result.includedMetrics})` : '');
 
       // Update external monitoring
       document.getElementById('external-count').textContent = `(${result.externalChecks}URL)`;
