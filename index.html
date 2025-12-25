@@ -580,11 +580,10 @@
               <div class="form-group">
                 <label for="standard-hosts">スタンダードホスト数</label>
                 <input
-                  type="text"
+                  type="number"
                   id="standard-hosts"
                   min="0"
                   step="1"
-                  pattern="[0-9]*"
                   inputmode="numeric"
                   value="0"
                   aria-describedby="standard-hint"
@@ -595,11 +594,10 @@
               <div class="form-group">
                 <label for="micro-hosts">マイクロホスト数</label>
                 <input
-                  type="text"
+                  type="number"
                   id="micro-hosts"
                   min="0"
                   step="1"
-                  pattern="[0-9]*"
                   inputmode="numeric"
                   value="0"
                   aria-describedby="micro-hint"
@@ -614,11 +612,10 @@
                     <p class="details-description">無料枠を超過したホストメトリック数を入力してください（無料枠: <abbr title="スタンダードホスト">SH</abbr> 200個/台、<abbr title="マイクロホスト">MH</abbr> 30個/台）</p>
                     <label for="host-metrics">超過ホストメトリック数</label>
                     <input
-                      type="text"
+                      type="number"
                       id="host-metrics"
                       min="0"
                       step="1"
-                      pattern="[0-9]*"
                       inputmode="numeric"
                       value="0"
                       aria-describedby="host-metrics-hint"
@@ -637,11 +634,10 @@
               <div class="form-group">
                 <label for="service-metrics">サービスメトリック数</label>
                 <input
-                  type="text"
+                  type="number"
                   id="service-metrics"
                   min="0"
                   step="1"
-                  pattern="[0-9]*"
                   inputmode="numeric"
                   value="0"
                   aria-describedby="service-metrics-hint"
@@ -652,11 +648,10 @@
               <div class="form-group">
                 <label for="labeled-metrics">ラベル付きメトリック数</label>
                 <input
-                  type="text"
+                  type="number"
                   id="labeled-metrics"
                   min="0"
                   step="1"
-                  pattern="[0-9]*"
                   inputmode="numeric"
                   value="0"
                   aria-describedby="labeled-metrics-hint"
@@ -667,11 +662,10 @@
               <div class="form-group">
                 <label for="trace-spans">トレーススパン数（100万単位）</label>
                 <input
-                  type="text"
+                  type="number"
                   id="trace-spans"
                   min="0"
                   step="1"
-                  pattern="[0-9]*"
                   inputmode="numeric"
                   value="0"
                   aria-describedby="trace-hint"
@@ -688,11 +682,10 @@
               <div class="form-group">
                 <label for="external-checks">外形監視URL数</label>
                 <input
-                  type="text"
+                  type="number"
                   id="external-checks"
                   min="0"
                   step="1"
-                  pattern="[0-9]*"
                   inputmode="numeric"
                   value="0"
                   aria-describedby="external-hint"
@@ -703,11 +696,10 @@
               <div class="form-group">
                 <label for="anomaly-detection">ロール内異常検知対象ホスト数</label>
                 <input
-                  type="text"
+                  type="number"
                   id="anomaly-detection"
                   min="0"
                   step="1"
-                  pattern="[0-9]*"
                   inputmode="numeric"
                   value="0"
                   aria-describedby="anomaly-hint"
@@ -820,29 +812,29 @@
         <div style="display: grid; gap: 1.5rem;">
           <div class="form-group">
             <label for="price-standard-host">スタンダードホスト単価（円/月）</label>
-            <input type="text" id="price-standard-host" min="0" step="1"
-                   pattern="[0-9]*" inputmode="numeric" placeholder="1982">
+            <input type="number" id="price-standard-host" min="0" step="1"
+                   inputmode="numeric" placeholder="1982">
             <small class="form-hint">デフォルト: ¥1,982/月（税抜）</small>
           </div>
 
           <div class="form-group">
             <label for="price-micro-host">マイクロホスト単価（円/月）</label>
-            <input type="text" id="price-micro-host" min="0" step="1"
-                   pattern="[0-9]*" inputmode="numeric" placeholder="600">
+            <input type="number" id="price-micro-host" min="0" step="1"
+                   inputmode="numeric" placeholder="600">
             <small class="form-hint">デフォルト: ¥600/月（税抜）</small>
           </div>
 
           <div class="form-group">
             <label for="price-custom-metric">メトリック単価（円/月）</label>
-            <input type="text" id="price-custom-metric" min="0" step="1"
-                   pattern="[0-9]*" inputmode="numeric" placeholder="10">
+            <input type="number" id="price-custom-metric" min="0" step="1"
+                   inputmode="numeric" placeholder="10">
             <small class="form-hint">デフォルト: ¥10/月（税抜）</small>
           </div>
 
           <div class="form-group">
             <label for="price-trace-1m">トレーススパン単価（円/100万スパン/月）</label>
-            <input type="text" id="price-trace-1m" min="0" step="1"
-                   pattern="[0-9]*" inputmode="numeric" placeholder="300">
+            <input type="number" id="price-trace-1m" min="0" step="1"
+                   inputmode="numeric" placeholder="300">
             <small class="form-hint">デフォルト: ¥300/月（税抜）</small>
           </div>
         </div>
