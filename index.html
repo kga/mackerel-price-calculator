@@ -61,6 +61,7 @@
       text-shadow: 0 1px 0 #0b8cb3;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       padding: 0 1rem;
     }
 
@@ -69,6 +70,156 @@
       margin: 0;
       font-weight: 500;
       letter-spacing: 0;
+    }
+
+    .settings-button {
+      background: transparent;
+      border: none;
+      color: var(--white);
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.95;
+    }
+
+    .settings-button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      opacity: 1;
+    }
+
+    .settings-button svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Sidebar Styles */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .sidebar-panel {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 400px;
+      max-width: 90vw;
+      height: 100vh;
+      background: var(--white);
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s ease;
+    }
+
+    .sidebar-panel.active {
+      right: 0;
+    }
+
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: var(--text-primary);
+    }
+
+    .sidebar-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .sidebar-close:hover {
+      background: var(--mackerel-bg-alt);
+      color: var(--text-primary);
+    }
+
+    .sidebar-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+
+    .sidebar-footer {
+      padding: 1.5rem;
+      border-top: 1px solid var(--border-color-light);
+      display: flex;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .sidebar-button {
+      flex: 1;
+      padding: 0.625rem 1.25rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border-color-light);
+      background: var(--white);
+      color: var(--text-secondary);
+      font-family: inherit;
+    }
+
+    .sidebar-button:hover {
+      border-color: var(--border-color);
+      background: var(--mackerel-bg-alt);
+    }
+
+    .sidebar-button-primary {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+      color: var(--white);
+    }
+
+    .sidebar-button-primary:hover {
+      background: var(--accent-color-hover);
+      border-color: var(--accent-color-hover);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     main {
@@ -409,6 +560,13 @@
   <div class="container">
     <header>
       <h1>Mackerel Pricing Calculator</h1>
+      <button id="open-settings" class="settings-button" aria-label="設定" title="単価設定">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <line x1="4" y1="7" x2="20" y2="7"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="17" x2="20" y2="17"></line>
+        </svg>
+      </button>
     </header>
 
     <main>
@@ -639,6 +797,53 @@
       <p>※このツールは非公式です。</p>
       <p>正確な料金は<a href="https://ja.mackerel.io/pricing" target="_blank" rel="noopener noreferrer">Mackerel公式サイト</a>をご確認ください。</p>
     </footer>
+
+    <!-- Settings Sidebar -->
+    <div class="sidebar-overlay" id="settings-sidebar"></div>
+    <div class="sidebar-panel" id="sidebar-panel">
+      <div class="sidebar-header">
+        <h2>単価設定</h2>
+        <button class="sidebar-close" id="close-settings" aria-label="閉じる">×</button>
+      </div>
+      <div class="sidebar-body">
+        <p style="color: var(--text-tertiary); margin-bottom: 1.5rem; font-size: 0.875rem;">
+          各項目の単価をカスタマイズできます。空欄の場合はデフォルト値が使用されます。
+        </p>
+        <div style="display: grid; gap: 1.5rem;">
+          <div class="form-group">
+            <label for="price-standard-host">スタンダードホスト単価（円/月）</label>
+            <input type="number" id="price-standard-host" min="0" step="1"
+                   inputmode="numeric" placeholder="1982">
+            <small class="form-hint">デフォルト: ¥1,982/月（税抜）</small>
+          </div>
+
+          <div class="form-group">
+            <label for="price-micro-host">マイクロホスト単価（円/月）</label>
+            <input type="number" id="price-micro-host" min="0" step="1"
+                   inputmode="numeric" placeholder="600">
+            <small class="form-hint">デフォルト: ¥600/月（税抜）</small>
+          </div>
+
+          <div class="form-group">
+            <label for="price-custom-metric">メトリック単価（円/月）</label>
+            <input type="number" id="price-custom-metric" min="0" step="1"
+                   inputmode="numeric" placeholder="10">
+            <small class="form-hint">デフォルト: ¥10/月（税抜）</small>
+          </div>
+
+          <div class="form-group">
+            <label for="price-trace-1m">トレーススパン単価（円/100万スパン/月）</label>
+            <input type="number" id="price-trace-1m" min="0" step="1"
+                   inputmode="numeric" placeholder="300">
+            <small class="form-hint">デフォルト: ¥300/月（税抜）</small>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <button class="sidebar-button" id="reset-prices">リセット</button>
+        <button class="sidebar-button sidebar-button-primary" id="apply-settings">適用</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -650,6 +855,13 @@
       TRACE_1M: 300,            // 税抜 ¥300 (税込 ¥330) per 1M spans
       MINIMUM_CHARGE: 1982,     // 税抜 ¥1,982 (税込 ¥2,180)
       TAX_RATE: 0.10
+    };
+
+    const DEFAULT_PRICES = {
+      STANDARD_HOST: 1982,
+      MICRO_HOST: 600,
+      CUSTOM_METRIC: 10,
+      TRACE_1M: 300
     };
 
     const INCLUDED = {
@@ -671,6 +883,22 @@
       traceSpans: document.getElementById('trace-spans')
     };
 
+    const priceInputs = {
+      standardHost: document.getElementById('price-standard-host'),
+      microHost: document.getElementById('price-micro-host'),
+      customMetric: document.getElementById('price-custom-metric'),
+      trace1M: document.getElementById('price-trace-1m')
+    };
+
+    const sidebar = {
+      overlay: document.getElementById('settings-sidebar'),
+      panel: document.getElementById('sidebar-panel'),
+      openButton: document.getElementById('open-settings'),
+      closeButton: document.getElementById('close-settings'),
+      applyButton: document.getElementById('apply-settings'),
+      resetButton: document.getElementById('reset-prices')
+    };
+
     // Utility Functions
     function formatPrice(price) {
       return '¥' + Math.round(price).toLocaleString('ja-JP');
@@ -682,6 +910,111 @@
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(this, args), wait);
       };
+    }
+
+    // Sidebar Control
+    function openSidebar() {
+      sidebar.overlay.classList.add('active');
+      sidebar.panel.classList.add('active');
+    }
+
+    function closeSidebar() {
+      sidebar.overlay.classList.remove('active');
+      sidebar.panel.classList.remove('active');
+    }
+
+    // Price Management
+    function loadCustomPrices() {
+      try {
+        const stored = localStorage.getItem('mackerel-custom-prices');
+        if (stored) {
+          const customPrices = JSON.parse(stored);
+          return {
+            STANDARD_HOST: customPrices.standardHost || DEFAULT_PRICES.STANDARD_HOST,
+            MICRO_HOST: customPrices.microHost || DEFAULT_PRICES.MICRO_HOST,
+            CUSTOM_METRIC: customPrices.customMetric || DEFAULT_PRICES.CUSTOM_METRIC,
+            TRACE_1M: customPrices.trace1M || DEFAULT_PRICES.TRACE_1M
+          };
+        }
+      } catch (e) {
+        console.warn('Failed to load custom prices:', e);
+      }
+      return null;
+    }
+
+    function saveCustomPrices() {
+      const customPrices = {
+        standardHost: parseInt(priceInputs.standardHost.value) || DEFAULT_PRICES.STANDARD_HOST,
+        microHost: parseInt(priceInputs.microHost.value) || DEFAULT_PRICES.MICRO_HOST,
+        customMetric: parseInt(priceInputs.customMetric.value) || DEFAULT_PRICES.CUSTOM_METRIC,
+        trace1M: parseInt(priceInputs.trace1M.value) || DEFAULT_PRICES.TRACE_1M
+      };
+
+      try {
+        localStorage.setItem('mackerel-custom-prices', JSON.stringify(customPrices));
+      } catch (e) {
+        console.warn('Failed to save custom prices:', e);
+      }
+    }
+
+    function applyCustomPrices() {
+      PRICES.STANDARD_HOST = parseInt(priceInputs.standardHost.value) || DEFAULT_PRICES.STANDARD_HOST;
+      PRICES.MICRO_HOST = parseInt(priceInputs.microHost.value) || DEFAULT_PRICES.MICRO_HOST;
+      PRICES.CUSTOM_METRIC = parseInt(priceInputs.customMetric.value) || DEFAULT_PRICES.CUSTOM_METRIC;
+      PRICES.TRACE_1M = parseInt(priceInputs.trace1M.value) || DEFAULT_PRICES.TRACE_1M;
+      PRICES.MINIMUM_CHARGE = PRICES.STANDARD_HOST;
+
+      saveCustomPrices();
+      updateHints();
+      updateCalculation();
+      closeSidebar();
+    }
+
+    function resetPrices() {
+      priceInputs.standardHost.value = '';
+      priceInputs.microHost.value = '';
+      priceInputs.customMetric.value = '';
+      priceInputs.trace1M.value = '';
+
+      localStorage.removeItem('mackerel-custom-prices');
+
+      PRICES.STANDARD_HOST = DEFAULT_PRICES.STANDARD_HOST;
+      PRICES.MICRO_HOST = DEFAULT_PRICES.MICRO_HOST;
+      PRICES.CUSTOM_METRIC = DEFAULT_PRICES.CUSTOM_METRIC;
+      PRICES.TRACE_1M = DEFAULT_PRICES.TRACE_1M;
+      PRICES.MINIMUM_CHARGE = DEFAULT_PRICES.STANDARD_HOST;
+
+      updateHints();
+      updateCalculation();
+    }
+
+    function updateHints() {
+      document.getElementById('standard-hint').textContent =
+        `1台あたり${formatPrice(PRICES.STANDARD_HOST)}/月（税抜）`;
+
+      document.getElementById('micro-hint').textContent =
+        `1台あたり${formatPrice(PRICES.MICRO_HOST)}/月（税抜）`;
+
+      document.getElementById('host-metrics-hint').textContent =
+        `1メトリックあたり${formatPrice(PRICES.CUSTOM_METRIC)}/月（税抜）`;
+
+      document.getElementById('service-metrics-hint').textContent =
+        `1個あたり${formatPrice(PRICES.CUSTOM_METRIC)}/月（税抜）`;
+
+      document.getElementById('labeled-metrics-hint').textContent =
+        `1個あたり${formatPrice(PRICES.CUSTOM_METRIC)}/月（税抜）`;
+
+      document.getElementById('trace-hint').innerHTML =
+        `500万スパンまで無料<br>以降100万スパンごとに${formatPrice(PRICES.TRACE_1M)}（税抜）`;
+
+      document.getElementById('external-hint').innerHTML =
+        `20URLまで無料<br>以降20URLごとに<abbr title="スタンダードホスト">SH</abbr>1台換算 (${formatPrice(PRICES.STANDARD_HOST)})`;
+
+      document.getElementById('anomaly-hint').innerHTML =
+        `5台ごとに<abbr title="スタンダードホスト">SH</abbr>1台換算 (${formatPrice(PRICES.STANDARD_HOST)})`;
+
+      document.getElementById('minimum-price').textContent =
+        formatPrice(PRICES.MINIMUM_CHARGE);
     }
 
     // Main Calculation Function
@@ -860,10 +1193,36 @@
 
     // Initialize
     function init() {
+      // Load custom prices from localStorage
+      const savedPrices = loadCustomPrices();
+      if (savedPrices) {
+        PRICES.STANDARD_HOST = savedPrices.STANDARD_HOST;
+        PRICES.MICRO_HOST = savedPrices.MICRO_HOST;
+        PRICES.CUSTOM_METRIC = savedPrices.CUSTOM_METRIC;
+        PRICES.TRACE_1M = savedPrices.TRACE_1M;
+        PRICES.MINIMUM_CHARGE = PRICES.STANDARD_HOST;
+
+        // Populate price input fields
+        priceInputs.standardHost.value = savedPrices.STANDARD_HOST;
+        priceInputs.microHost.value = savedPrices.MICRO_HOST;
+        priceInputs.customMetric.value = savedPrices.CUSTOM_METRIC;
+        priceInputs.trace1M.value = savedPrices.TRACE_1M;
+      }
+
+      // Update hints based on loaded prices
+      updateHints();
+
       // Attach event listeners to all inputs
       Object.values(inputs).forEach(input => {
         input.addEventListener('change', updateCalculation);
       });
+
+      // Attach sidebar event listeners
+      sidebar.openButton.addEventListener('click', openSidebar);
+      sidebar.closeButton.addEventListener('click', closeSidebar);
+      sidebar.applyButton.addEventListener('click', applyCustomPrices);
+      sidebar.resetButton.addEventListener('click', resetPrices);
+      sidebar.overlay.addEventListener('click', closeSidebar);
 
       // Initial calculation
       updateCalculation();
