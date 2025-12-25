@@ -581,8 +581,8 @@
             </div>
             <div class="breakdown-item" id="row-trace">
               <div class="breakdown-label">
-                トレーススパン <span id="trace-count">(0百万)</span>
-                <div class="breakdown-note" id="trace-note">※無料枠: 500万、課金対象: 0百万</div>
+                トレーススパン <span id="trace-count">(0万)</span>
+                <div class="breakdown-note" id="trace-note">※無料枠: 500万、課金対象: 0万</div>
               </div>
               <div class="breakdown-value" id="trace-price">¥0</div>
             </div>
@@ -816,7 +816,7 @@
         (result.anomalyHostEquivalent > 0 ? ` (<abbr title="スタンダードホスト">SH</abbr>${result.anomalyHostEquivalent}台換算)` : '');
 
       // Update trace spans
-      document.getElementById('trace-count').textContent = `(${result.traceSpans}百万)`;
+      document.getElementById('trace-count').textContent = `(${result.traceSpans * 100}万)`;
       document.getElementById('trace-price').textContent = formatPrice(result.traceCharge);
       document.getElementById('trace-note').textContent =
         `※無料枠: ${INCLUDED.FREE_TRACE * 100}万、課金対象: ${(result.billableTraceSpans * 100).toFixed(0)}万`;
